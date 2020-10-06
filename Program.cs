@@ -1,15 +1,19 @@
 ﻿using org.apache.pdfbox.pdmodel;
 using org.apache.pdfbox.util;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace PdfDataToCsv
 {
     class Program
     {
-        private static Dictionary<string, string> states = new Dictionary<string, string>();
+        private static Dictionary<string, string> states   = new Dictionary<string, string>();
+        private static DirectoryInfo outputDir = new DirectoryInfo(ConfigurationManager.AppSettings["output"]);
+        private static Regex combinedNameRegex = new Regex(@"(?<output>.{1,})(?<start>\d{4})_(?<end>\d{4})\.pdf", RegexOptions.Singleline);
 
         static void Main(string[] args)
         {
@@ -27,17 +31,16 @@ namespace PdfDataToCsv
                 text = streamReader.ReadLine();
             }
 
-            DirectoryInfo output = new DirectoryInfo(ConfigurationManager.AppSettings["output"]);
-            if (!output.Exists)
+            if (!outputDir.Exists)
             {
-                output.Create();
+                outputDir.Create();
             }
 
             // copy templates prior to appending them with the yearly data
             DirectoryInfo templates = new DirectoryInfo("acf data\\templates");
             foreach (FileInfo fileInfo in templates.EnumerateFiles())
             {
-                fileInfo.CopyTo(Path.Combine(output.FullName, fileInfo.Name), true);
+                fileInfo.CopyTo(Path.Combine(outputDir.FullName, fileInfo.Name), true);
             }
 
             // process the yearly data
@@ -45,7 +48,7 @@ namespace PdfDataToCsv
             var subDirs = directory.EnumerateDirectories("20??");
             foreach (string pattern in yearly)
             {
-                string outputFile = Path.Combine(output.FullName, pattern + ".csv");
+                string outputFile = Path.Combine(outputDir.FullName, pattern + ".csv");
                 foreach (var subDir in subDirs)
                 {
                     foreach (var file in subDir.EnumerateFiles($"{pattern}20??.pdf"))
@@ -61,7 +64,7 @@ namespace PdfDataToCsv
             foreach (var file in combined.EnumerateFiles("*.pdf"))
             {
                 string data = GetPdfText(file.FullName);
-                GenerateCsvFromCombined(data, Path.Combine(output.FullName, file.Name.Replace(".pdf", ".csv")));
+                GenerateCsvFromCombined(data, file.Name);
             }
         }
 
@@ -74,13 +77,23 @@ namespace PdfDataToCsv
             return text;
         }
 
-        private static void GenerateCsvFromCombined(string data, string outputFile)
+        private static void GenerateCsvFromCombined(string data, string inputFile)
         {
+            Match match = combinedNameRegex.Match(inputFile);
+            if (!match.Success)
+            {
+                throw new Exception("Filename did not fit expected format: " + inputFile);
+            }
+
+            string outputFile = Path.Combine(outputDir.FullName, match.Groups["output"].Value + ".csv");
+            int start = int.Parse(match.Groups["start"].Value);
+            int end = int.Parse(match.Groups["end"].Value);
+
             StreamWriter writer = new StreamWriter(outputFile);
             writer.AutoFlush = true;
             
             // we know what the headers should be so write them
-            if (outputFile.Contains("gender"))
+            if (inputFile.Contains("gender"))
             {
                 writer.WriteLine("StateId,Year,Male,Female,Total,Missing");
             }
@@ -102,7 +115,6 @@ namespace PdfDataToCsv
                             select kvp;
 
                 // only data rows: ignore all lines which do not begin with the name of a state
-
                 if (query.Count() > 0)
                 {
                     var kvp = query.First();
@@ -112,28 +124,39 @@ namespace PdfDataToCsv
                     int entryIndex = 0;
                     // these entries need to be flattened. 2012 through 2016 are on the same row for each state
                     // we want a separate line for each state/year so we can normalize the data in the db
-                    for (int year = 2012; year <= 2016; year++)
+                    for (int year = start; year <= end; year++)
                     {
-                        writer.Write(kvp.Value); // stateId
-                        writer.Write(",");
-                        writer.Write(year);
-                        writer.Write(",");
-
-                        // we know that these three reports are all binary yes/no or male/female, plus total and missing
-                        // so four columns total
-                        for (int col = 0; col < 4; col++)
+                        // the order of the columns is Yes, No, Total, Missing
+                        // if the Total (third column) == 0, this means there is no data
+                        // for that state for this year, skip it so it doesn't block data when we have it
+                        if (entry[entryIndex + 2] != "0")
                         {
-                            writer.Write(entry[entryIndex]);
-                            if (col == 3)
-                            {
-                                writer.WriteLine();
-                            }
-                            else
-                            {
-                                writer.Write(",");
-                            }
+                            writer.Write(kvp.Value); // stateId
+                            writer.Write(",");
+                            writer.Write(year);
+                            writer.Write(",");
 
-                            entryIndex++;
+                            // we know that these three reports are all binary yes/no or male/female, plus total and missing
+                            // so four columns total
+                            for (int col = 0; col < 4; col++)
+                            {
+                                writer.Write(entry[entryIndex]);
+                                if (col == 3)
+                                {
+                                    writer.WriteLine();
+                                }
+                                else
+                                {
+                                    writer.Write(",");
+                                }
+
+                                entryIndex++;
+                            }
+                        }
+                        else
+                        {
+                            // increase by 4 because we skip the entire row
+                            entryIndex += 4;
                         }
                     }
                 }
