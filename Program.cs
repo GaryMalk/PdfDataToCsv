@@ -17,20 +17,6 @@ namespace PdfDataToCsv
 
         static void Main(string[] args)
         {
-            // get list of reports that are yearly
-            string[] yearly = ConfigurationManager.AppSettings["yearly"].Split(';');
-            
-            // build map of State Names to StateIds
-            StreamReader streamReader = new StreamReader("State.csv");
-            _ = streamReader.ReadLine(); // throw away header
-            string text = streamReader.ReadLine();
-            while (text !=null)
-            {
-                var entry = text.Split(',');
-                states.Add(entry[1], entry[0]); // import backwards; we will use the State Name as the key
-                text = streamReader.ReadLine();
-            }
-
             if (!outputDir.Exists)
             {
                 outputDir.Create();
@@ -41,6 +27,24 @@ namespace PdfDataToCsv
             foreach (FileInfo fileInfo in templates.EnumerateFiles())
             {
                 fileInfo.CopyTo(Path.Combine(outputDir.FullName, fileInfo.Name), true);
+            }
+
+            // copy the State.csv file to the output directory
+            FileInfo stateCsv = new FileInfo("State.csv");
+            stateCsv.CopyTo(Path.Combine(outputDir.FullName, stateCsv.Name), true);
+
+            // get list of reports that are yearly
+            string[] yearly = ConfigurationManager.AppSettings["yearly"].Split(';');
+            
+            // build map of State Names to StateIds
+            StreamReader streamReader = new StreamReader(stateCsv.Name);
+            _ = streamReader.ReadLine(); // throw away header
+            string text = streamReader.ReadLine();
+            while (text !=null)
+            {
+                var entry = text.Split(',');
+                states.Add(entry[1], entry[0]); // import backwards; we will use the State Name as the key
+                text = streamReader.ReadLine();
             }
 
             // process the yearly data
@@ -89,19 +93,9 @@ namespace PdfDataToCsv
             int start = int.Parse(match.Groups["start"].Value);
             int end = int.Parse(match.Groups["end"].Value);
 
-            StreamWriter writer = new StreamWriter(outputFile);
+            StreamWriter writer = new StreamWriter(outputFile, true);
             writer.AutoFlush = true;
             
-            // we know what the headers should be so write them
-            if (inputFile.Contains("gender"))
-            {
-                writer.WriteLine("StateId,Year,Male,Female,Total,Missing");
-            }
-            else
-            {
-                writer.WriteLine("StateId,Year,Yes,No,Total,Missing");
-            }
-
             var reader = new StringReader(data);
             string text = reader.ReadLine();
             while (text != null)
