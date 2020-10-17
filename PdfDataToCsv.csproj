@@ -72,28 +72,28 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="acf data\templates\adoption_subsidy.csv">
+    <None Include="templates\adoption_subsidy.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="acf data\templates\family_structure.csv">
+    <None Include="templates\family_structure.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="acf data\templates\final_age.csv">
+    <None Include="templates\final_age.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="acf data\templates\gender.csv">
+    <None Include="templates\gender.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="acf data\templates\prior_relation.csv">
+    <None Include="templates\prior_relation.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="acf data\templates\race.csv">
+    <None Include="templates\race.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="acf data\templates\special_needs.csv">
+    <None Include="templates\special_needs.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="acf data\templates\tpr.csv">
+    <None Include="templates\tpr.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="App.config" />
@@ -104,88 +104,88 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <Content Include="acf data\2012\family_structure2012.pdf">
+    <Content Include="pdf\family_structure2012.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="acf data\2012\final_age2012.pdf">
+    <Content Include="pdf\final_age2012.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="acf data\2012\prior_relation2012.pdf">
+    <Content Include="pdf\prior_relation2012.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="acf data\2012\race2012.pdf">
+    <Content Include="pdf\race2012.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="acf data\2012\tpr2012.pdf">
+    <Content Include="pdf\tpr2012.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="acf data\2013\family_structure2013.pdf">
+    <Content Include="pdf\family_structure2013.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="acf data\2013\final_age2013.pdf">
+    <Content Include="pdf\final_age2013.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="acf data\2013\prior_relation2013.pdf">
+    <Content Include="pdf\prior_relation2013.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="acf data\2013\race2013.pdf">
+    <Content Include="pdf\race2013.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="acf data\2013\tpr2013.pdf">
+    <Content Include="pdf\tpr2013.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="acf data\2014\family_structure2014.pdf">
+    <Content Include="pdf\family_structure2014.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="acf data\2014\final_age2014.pdf">
+    <Content Include="pdf\final_age2014.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="acf data\2014\prior_relation2014.pdf">
+    <Content Include="pdf\prior_relation2014.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="acf data\2014\race2014.pdf">
+    <Content Include="pdf\race2014.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="acf data\2014\tpr2014.pdf">
+    <Content Include="pdf\tpr2014.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="acf data\2015\family_structure2015.pdf">
+    <Content Include="pdf\family_structure2015.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="acf data\2015\final_age2015.pdf">
+    <Content Include="pdf\final_age2015.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="acf data\2015\prior_relation2015.pdf">
+    <Content Include="pdf\prior_relation2015.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="acf data\2015\race2015.pdf">
+    <Content Include="pdf\race2015.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="acf data\2015\tpr2015.pdf">
+    <Content Include="pdf\tpr2015.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="acf data\2016\family_structure2016.pdf">
+    <Content Include="pdf\family_structure2016.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="acf data\2016\final_age2016.pdf">
+    <Content Include="pdf\final_age2016.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="acf data\2016\prior_relation2016.pdf">
+    <Content Include="pdf\prior_relation2016.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="acf data\2016\race2016.pdf">
+    <Content Include="pdf\race2016.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="acf data\2016\tpr2016.pdf">
+    <Content Include="pdf\tpr2016.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="acf data\Combined\adoption_subsidy2012_2016.pdf">
+    <Content Include="pdf\adoption_subsidy2012_2016.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="acf data\Combined\gender2012_2016.pdf">
+    <Content Include="pdf\gender2012_2016.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="acf data\Combined\special_needs2012_2016.pdf">
+    <Content Include="pdf\special_needs2012_2016.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

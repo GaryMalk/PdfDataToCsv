@@ -13,7 +13,9 @@ namespace PdfDataToCsv
     {
         private static Dictionary<string, string> states   = new Dictionary<string, string>();
         private static DirectoryInfo outputDir = new DirectoryInfo(ConfigurationManager.AppSettings["output"]);
+        private static DirectoryInfo intputDir = new DirectoryInfo(ConfigurationManager.AppSettings["input"]);
         private static Regex combinedNameRegex = new Regex(@"(?<output>.{1,})(?<start>\d{4})_(?<end>\d{4})\.pdf", RegexOptions.Singleline);
+        private static Regex yearlyRegex = new Regex(@"(?<output>.{1,})(?<year>\d{4})\.pdf", RegexOptions.Singleline);
 
         static void Main(string[] args)
         {
@@ -23,7 +25,7 @@ namespace PdfDataToCsv
             }
 
             // copy templates prior to appending them with the yearly data
-            DirectoryInfo templates = new DirectoryInfo("acf data\\templates");
+            DirectoryInfo templates = new DirectoryInfo("templates");
             foreach (FileInfo fileInfo in templates.EnumerateFiles())
             {
                 fileInfo.CopyTo(Path.Combine(outputDir.FullName, fileInfo.Name), true);
@@ -33,9 +35,6 @@ namespace PdfDataToCsv
             FileInfo stateCsv = new FileInfo("State.csv");
             stateCsv.CopyTo(Path.Combine(outputDir.FullName, stateCsv.Name), true);
 
-            // get list of reports that are yearly
-            string[] yearly = ConfigurationManager.AppSettings["yearly"].Split(';');
-            
             // build map of State Names to StateIds
             StreamReader streamReader = new StreamReader(stateCsv.Name);
             _ = streamReader.ReadLine(); // throw away header
@@ -47,28 +46,41 @@ namespace PdfDataToCsv
                 text = streamReader.ReadLine();
             }
 
-            // process the yearly data
-            DirectoryInfo directory = new DirectoryInfo(@"acf data");
-            var subDirs = directory.EnumerateDirectories("20??");
-            foreach (string pattern in yearly)
+            // get all PDF files
+            DirectoryInfo pdfDir = new DirectoryInfo(@"pdf");
+            foreach (var file in pdfDir.EnumerateFiles($"*.pdf", SearchOption.AllDirectories))
             {
-                string outputFile = Path.Combine(outputDir.FullName, pattern + ".csv");
-                foreach (var subDir in subDirs)
+                ProcessReports(file);
+            }
+
+            // additonal reports can be processed here, if desired
+            if (intputDir.Exists)
+            {
+                foreach (var file in intputDir.EnumerateFiles($"*.pdf", SearchOption.AllDirectories))
                 {
-                    foreach (var file in subDir.EnumerateFiles($"{pattern}20??.pdf"))
-                    {
-                        string data = GetPdfText(file.FullName);
-                        // directory name is the year
-                        GenerateCsv(data, outputFile, file.Directory.Name);
-                    }
+                    ProcessReports(file);
                 }
             }
 
-            DirectoryInfo combined = new DirectoryInfo("acf data\\Combined");
-            foreach (var file in combined.EnumerateFiles("*.pdf"))
+        }
+
+        private static void ProcessReports(FileInfo file)
+        {
+            string data = GetPdfText(file.FullName);
+            if (combinedNameRegex.IsMatch(file.Name))
             {
-                string data = GetPdfText(file.FullName);
+                // process combined reports
                 GenerateCsvFromCombined(data, file.Name);
+            }
+            else if (yearlyRegex.IsMatch(file.Name))
+            {
+                // process yearly reports
+                GenerateCsv(data, file.Name);
+            }
+            else
+            {
+                // unknown filename format
+                throw new Exception("Filename did not fit expected format: " + file.Name);
             }
         }
 
@@ -84,11 +96,6 @@ namespace PdfDataToCsv
         private static void GenerateCsvFromCombined(string data, string inputFile)
         {
             Match match = combinedNameRegex.Match(inputFile);
-            if (!match.Success)
-            {
-                throw new Exception("Filename did not fit expected format: " + inputFile);
-            }
-
             string outputFile = Path.Combine(outputDir.FullName, match.Groups["output"].Value + ".csv");
             int start = int.Parse(match.Groups["start"].Value);
             int end = int.Parse(match.Groups["end"].Value);
@@ -163,8 +170,12 @@ namespace PdfDataToCsv
             writer.Close();
         }
 
-        private static void GenerateCsv(string data, string outputFile, string year)
+        private static void GenerateCsv(string data, string inputFile)
         {
+            Match match = yearlyRegex.Match(inputFile);
+            string outputFile = Path.Combine(outputDir.FullName, match.Groups["output"].Value + ".csv");
+            int year = int.Parse(match.Groups["year"].Value);
+
             StreamWriter writer = new StreamWriter(outputFile, true);
             writer.AutoFlush = true;
             var reader = new StringReader(data);
