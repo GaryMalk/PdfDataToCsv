@@ -53,7 +53,7 @@ namespace PdfDataToCsv
                 ProcessReports(file);
             }
 
-            // additonal reports can be processed here, if desired
+            // additional reports can be processed here, if desired
             if (intputDir.Exists)
             {
                 foreach (var file in intputDir.EnumerateFiles($"*.pdf", SearchOption.AllDirectories))
@@ -124,7 +124,7 @@ namespace PdfDataToCsv
 
                     int entryIndex = 0;
                     // these entries need to be flattened. 2012 through 2016 are on the same row for each state
-                    // we want a separate line for each state/year so we can normalize the data in the db
+                    // we want a separate line for each state/year so we can normalize the data in the dB
                     for (int year = start; year <= end; year++)
                     {
                         // the order of the columns is Yes, No, Total, Missing
